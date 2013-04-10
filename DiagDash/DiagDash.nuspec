@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DiagDash</id>
+    <version>1.0.0.0</version>
+    <authors>Sperling</authors>
+    <owners>Sperling</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <description>Diagnostic dashboard for ASP.NET</description>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Razor" version="2.0.20715.0" />
+      <dependency id="Microsoft.AspNet.SignalR" version="1.0.1" />
+      <dependency id="Microsoft.AspNet.SignalR.Core" version="1.0.1" />
+      <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
+      <dependency id="Newtonsoft.Json" version="4.5.11" />
+      <dependency id="Owin" version="1.0" />
+      <dependency id="WebActivatorEx" version="2.0.1" />
+      <dependency id="RazorGenerator.Templating" version="1.5.3.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Configuration" />
+      <frameworkAssembly assemblyName="System.Web" />
+      <frameworkAssembly assemblyName="System.Web.Extensions" />      
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="pack\lib\net40\*" target="lib\net40" />
+    <file src="pack\lib\net45\*" target="lib\net45" />
+    <file src="readme.txt" target="readme.txt" />
+    <file src="pack\tools\Install.ps1" target="tools\Install.ps1" />
+    <file src="pack\tools\Uninstall.ps1" target="tools\Uninstall.ps1" />
+  </files>
+</package>

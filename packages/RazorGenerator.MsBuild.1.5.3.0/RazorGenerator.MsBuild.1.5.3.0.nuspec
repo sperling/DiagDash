@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>RazorGenerator.MsBuild</id>
+    <version>1.5.3.0</version>
+    <title>RazorGenerator.MsBuild</title>
+    <authors>RazorGenerator contributors</authors>
+    <owners>RazorGenerator contributors</owners>
+    <licenseUrl>http://razorgenerator.codeplex.com/license</licenseUrl>
+    <projectUrl>http://razorgenerator.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MsBuild tasks for RazorGenerator</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>razorgenerator msbuild</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="mscorlib" targetFramework="" />
+    </frameworkAssemblies>
+    <references />
+  </metadata>
+</package>
