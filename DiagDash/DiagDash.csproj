@@ -146,7 +146,6 @@
       <LastGenOutput>Index.generated.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <None Include="README.md" />
     <None Include="Scripts\app\index.min.js.map">
       <DependentUpon>index.js</DependentUpon>
     </None>
