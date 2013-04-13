@@ -8,6 +8,13 @@ using System.Web;
 
 namespace DiagDash
 {
+    /// <summary>
+    /// It's tricky to bypass IIS native module serving request for url's ending with what looks like js/css/image 
+    /// static files. We need our module to get the request, but runAllManagedModulesForAllRequests can be false in web.config
+    /// and using ExtensionLessUrlHandler. Either way, no need to make it work for .js/.css/.png/.gif This would only
+    /// force our module to be run for each request anyway. So workaround it by replacing . with _
+    /// See http://www.west-wind.com/weblog/posts/2012/Oct/25/Caveats-with-the-runAllManagedModulesForAllRequests-in-IIS-78
+    /// </summary>
     internal static class ResourceHelper
     {
         /// <summary>
@@ -17,9 +24,6 @@ namespace DiagDash
         /// <returns></returns>
         public static string Read(string fileName)
         {
-            // can't find away to not let IIS native file handler take over request totally when using file extensions
-            // without any config handler registration.
-            // so workaround by replacing . with _
             fileName = fileName.Replace(DiagDashSettings.RootUrl, "").Replace("_", ".");
             string path = Path.GetDirectoryName(fileName);
             string fname = Path.GetFileName(fileName);
@@ -42,9 +46,6 @@ namespace DiagDash
         /// <returns></returns>
         public static Stream ReadBinary(string fileName)
         {
-            // can't find away to not let IIS native file handler take over request totally when using file extensions
-            // without any config handler registration.
-            // so workaround by replacing . with _
             fileName = fileName.Replace(DiagDashSettings.RootUrl, "").Replace("_", ".");
             string path = Path.GetDirectoryName(fileName);
             string fname = Path.GetFileName(fileName);
@@ -56,9 +57,6 @@ namespace DiagDash
 
         public static IHtmlString Url(string url)
         {
-            // can't find away to not let IIS native file handler take over request totally when using file extensions
-            // without any config handler registration.
-            // so workaround by replacing . with _
             return new HtmlString(String.Format("{0}/{1}", DiagDashSettings.RootUrl, url.Replace(".", "_")));
         }
 
