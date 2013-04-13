@@ -109,17 +109,17 @@ WriteLiteral("\" width=\"16\" height=\"16\" style=\"visibility: hidden;\" />\r\n
 "    <th>Name</th>\r\n                                    <th>Value</th>\r\n         " +
 "                       </tr>\r\n                            </thead>\r\n            " +
 "                <tbody data-bind=\"foreach: rows\">\r\n                             " +
-"   <tr>\r\n                                    <td data-bind=\"text: name\"></td>\r\n " +
-"                                   <td data-bind=\"text: value\"></td>\r\n          " +
-"                      </tr>\r\n                            </tbody>\r\n             " +
-"           </table>\r\n                    </div>\r\n                    <div class=" +
-"\"row-fluid\"  data-bind=\"visible: !chosenRootObject().id, with: performanceCounte" +
-"r\">\r\n                        ");
+"   <tr>\r\n                                    <td data-bind=\"text: name, attr: { " +
+"title: doc }\"></td>\r\n                                    <td data-bind=\"text: va" +
+"lue\"></td>\r\n                                </tr>\r\n                            <" +
+"/tbody>\r\n                        </table>\r\n                    </div>\r\n         " +
+"           <div class=\"row-fluid\"  data-bind=\"visible: !chosenRootObject().id, w" +
+"ith: performanceCounter\">\r\n                        ");
 
 
 
 WriteLiteral(@"
-                        <table id=""perf-table"" class=""table table-bordered table-striped"" style=""table-layout: fixed;"">
+                        <table class=""table table-bordered table-striped"" style=""table-layout: fixed;"">
                             <thead>
                                 <tr>
                                     <th style=""width: 50%;"">Name</th>
@@ -128,7 +128,7 @@ WriteLiteral(@"
                             </thead>
                             <tbody data-bind=""foreach: rows"">
                                 <tr>
-                                    <td class=""use-tooltip"" data-bind=""text: counterName, attr: { title: counterHelp }"" data-toogle=""tooltip"" data-placement=""right""></td>
+                                    <td data-bind=""text: counterName, attr: { title: counterHelp }""></td>
                                     <td data-bind=""text: value""></td>
                                 </tr>
                             </tbody>
@@ -246,7 +246,17 @@ WriteLiteral("\"></script>\r\n\r\n        <script type=\"text/javascript\">\r\n 
             
             #line default
             #line hidden
-WriteLiteral("]);\r\n            });\r\n            \r\n        </script>\r\n    </body>\r\n</html>");
+WriteLiteral("], \'");
+
+
+            
+            #line 99 "..\..\Index.cshtml"
+                                                                                                                              Write(DiagDashSettings.RootUrl);
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\');\r\n            });\r\n            \r\n        </script>\r\n    </body>\r\n</html>");
 
 
         }

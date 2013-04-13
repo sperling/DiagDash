@@ -52,7 +52,7 @@
                             </thead>
                             <tbody data-bind="foreach: rows">
                                 <tr>
-                                    <td data-bind="text: name"></td>
+                                    <td data-bind="text: name, attr: { title: doc }"></td>
                                     <td data-bind="text: value"></td>
                                 </tr>
                             </tbody>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="row-fluid"  data-bind="visible: !chosenRootObject().id, with: performanceCounter">
                         @*TODO:   overflow hidden on th table td?*@
-                        <table id="perf-table" class="table table-bordered table-striped" style="table-layout: fixed;">
+                        <table class="table table-bordered table-striped" style="table-layout: fixed;">
                             <thead>
                                 <tr>
                                     <th style="width: 50%;">Name</th>
@@ -69,7 +69,7 @@
                             </thead>
                             <tbody data-bind="foreach: rows">
                                 <tr>
-                                    <td class="use-tooltip" data-bind="text: counterName, attr: { title: counterHelp }" data-toogle="tooltip" data-placement="right"></td>
+                                    <td data-bind="text: counterName, attr: { title: counterHelp }"></td>
                                     <td data-bind="text: value"></td>
                                 </tr>
                             </tbody>
@@ -96,7 +96,7 @@
         <script type="text/javascript">
             $(function () {
                 // first one is a dummy. for perfcounters.
-                index.init([undefined, @String.Join(", ", RootObjectUtils.RootObjectIds.Select(x => String.Format("'{0}'", x)))]);
+                index.init([undefined, @String.Join(", ", RootObjectUtils.RootObjectIds.Select(x => String.Format("'{0}'", x)))], '@DiagDashSettings.RootUrl');
             });
             
         </script>

@@ -1,8 +1,10 @@
 ﻿var index = (function ($, ko) {
+    var rootUrl;
+
     function ajaxRequest(method, params, callback) {
         $.ajax({
             dataType: "json",
-            url: '@DiagDashSettings.RootUrl' + '?m=' + method,
+            url: rootUrl + '?m=' + method,
             data: params,
             success: callback,
             cache: false
@@ -28,10 +30,11 @@
         self.hashToRowIndex = {};
     }
 
-    function RootObjectRowViewModel(name, value) {
+    function RootObjectRowViewModel(name, doc, value) {
         // data
         var self = this;
         self.name = name;
+        self.doc = doc;
         self.value = value;
     }
 
@@ -65,7 +68,9 @@
     }
 
     return {
-        init: function (rootObjectIds) {
+        init: function (rootObjectIds, currentRootUrl) {
+            rootUrl = currentRootUrl;
+
             $(document).ajaxError(function (event, jqxhr, settings, exception) {
                 toastr.error(exception, "Faild to fetch data");
             });
@@ -93,7 +98,7 @@
                             if (!rootObject.rows().length) {
                                 ajaxRequest("loadRootObject", { id: rootObjectId }, function (data) {
                                     for (var j = 0; j < data.length; j++) {
-                                        rootObject.rows.push(new RootObjectRowViewModel(data[j].name, data[j].value));
+                                        rootObject.rows.push(new RootObjectRowViewModel(data[j].Name, data[j].Doc, data[j].Value));
                                     }
                                 });
                             }
@@ -161,10 +166,6 @@
 
                     hubInitDone = true;
                 }); 
-            });
-
-            $('#perf-table').tooltip({
-                selector: 'td.use-tooltip'
             });
         }
     }

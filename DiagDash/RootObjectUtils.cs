@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.ILSpy.XmlDoc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -110,7 +111,7 @@ namespace DiagDash
             _ => HostingEnvironment.ShutdownReason,
             _ => HostingEnvironment.SiteName
         };*/
-        private static readonly Dictionary<string, List<Tuple<string, Func<HttpContext, object>>>> _rootObjectFuncs = new Dictionary<string, List<Tuple<string, Func<HttpContext, object>>>>()
+        private static readonly Dictionary<string, List<Tuple<Tuple<string, string>, Func<HttpContext, object>>>> _rootObjectFuncs = new Dictionary<string, List<Tuple<Tuple<string, string>, Func<HttpContext, object>>>>()
         {
             { "HttpRuntime", null },
             { "HttpContext", null },
@@ -142,7 +143,7 @@ namespace DiagDash
                 return GetRootObjectRowsForRoutes(context);
             }
             
-            List<Tuple<string, Func<HttpContext, object>>> funcs;
+            List<Tuple<Tuple<string, string>, Func<HttpContext, object>>> funcs;
 
             if (!_rootObjectFuncs.TryGetValue(rootObjectId, out funcs))
             {
@@ -170,7 +171,7 @@ namespace DiagDash
                 try
                 {
                     object value = i.Item2(context);
-                    list.Add(new RootObjectRow() { name = i.Item1, value = value != null ? value.ToString() : "null" });
+                    list.Add(new RootObjectRow() { Name = i.Item1.Item1, Doc = i.Item1.Item2, Value = value != null ? value.ToString() : "null" });
                 }
                 catch
                 {
@@ -200,7 +201,7 @@ namespace DiagDash
                     if (route != null)
                     {
                         // TODO:    we can add more stuff here.
-                        list.Add(new RootObjectRow() { name = route.Url, value = String.Empty });
+                        list.Add(new RootObjectRow() { Name = route.Url, Doc = String.Empty, Value = String.Empty });
                     }
                     else
                     {
@@ -218,16 +219,16 @@ namespace DiagDash
                             if (_owinRoutePathBase != null)
                             {
                                 string pathBase = (string)_owinRoutePathBase.GetValue(routeBase);
-                                list.Add(new RootObjectRow() { name = pathBase != null ? pathBase : "null", value = String.Empty });
+                                list.Add(new RootObjectRow() { Name = pathBase != null ? pathBase : "null", Doc = String.Empty, Value = String.Empty });
                             }
                             else
                             {
-                                list.Add(new RootObjectRow() { name = routeBaseType.FullName, value = "missing path base field" });
+                                list.Add(new RootObjectRow() { Name = routeBaseType.FullName, Doc = String.Empty, Value = "missing path base field" });
                             }
                         }
                         else
                         {
-                            list.Add(new RootObjectRow() { name = routeBaseType.FullName, value = "unknown type" });
+                            list.Add(new RootObjectRow() { Name = routeBaseType.FullName, Doc = String.Empty, Value = "unknown type" });
                         }
                     }
                 }
@@ -236,17 +237,17 @@ namespace DiagDash
             return list;
         }
 
-        private static List<Tuple<string, Func<HttpContext, object>>> CompileFuncs(List<Expression<Func<HttpContext, object>>> expressions)
+        private static List<Tuple<Tuple<string, string>, Func<HttpContext, object>>> CompileFuncs(List<Expression<Func<HttpContext, object>>> expressions)
         {
-            var list = new List<Tuple<string, Func<HttpContext, object>>>();
+            var list = new List<Tuple<Tuple<string, string>, Func<HttpContext, object>>>();
             
             foreach (var i in expressions)
             {
                 try
                 {
-                    string name = GetMemberName(i.Body);
+                    var nameAndDoc = GetMemberName(i.Body);
                     var compiledFunc = i.Compile();
-                    list.Add(Tuple.Create(name, compiledFunc));
+                    list.Add(Tuple.Create(nameAndDoc, compiledFunc));
                 }
                 catch
                 {
@@ -256,7 +257,31 @@ namespace DiagDash
             return list;
         }
 
-        private static string GetMemberName(Expression expression)
+        private static string GetDoc(MemberInfo member)
+        {
+            try
+            {
+                var docProvider = XmlDocLoader.LoadDocumentation(member.Module);
+                if (docProvider != null)
+                {
+                    string documentation = docProvider.GetDocumentation(XmlDocKeyProvider.GetKey(member));
+                    if (documentation != null)
+                    {
+                        var renderer = new XmlDocRenderer();
+                        renderer.AddXmlDocumentation(documentation);
+                        return renderer.CreateTextBlock();
+                    }
+                }
+            }
+            catch
+            {
+                return "Exception for " + member.Name;
+            }
+
+            return String.Empty;
+        }
+
+        private static Tuple<string, string> GetMemberName(Expression expression)
         {
             switch (expression.NodeType)
             {
@@ -264,13 +289,15 @@ namespace DiagDash
                     MemberExpression m = (MemberExpression)expression;
 			        if (m.Expression != null && m.Expression.NodeType == ExpressionType.MemberAccess) 
 			        {
-				        return String.Format("{1}.{0}", m.Member.Name, GetMemberName(m.Expression));
+                        var ret = GetMemberName(m.Expression);
+				        return Tuple.Create(String.Format("{1}.{0}", m.Member.Name, ret.Item1), GetDoc(m.Member));
 			        }
-			        return m.Member.Name;
+
+			        return Tuple.Create(m.Member.Name, GetDoc(m.Member));
                 case ExpressionType.Convert:
                     return GetMemberName(((UnaryExpression)expression).Operand);
                 default:
-                    return "FIXME: " + expression.NodeType;
+                    return Tuple.Create("FIXME: " + expression.NodeType, "");
             }
         }
     }
