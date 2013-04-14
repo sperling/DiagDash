@@ -109,12 +109,12 @@ WriteLiteral("\" width=\"16\" height=\"16\" style=\"visibility: hidden;\" />\r\n
 "    <th>Name</th>\r\n                                    <th>Value</th>\r\n         " +
 "                       </tr>\r\n                            </thead>\r\n            " +
 "                <tbody data-bind=\"foreach: rows\">\r\n                             " +
-"   <tr>\r\n                                    <td data-bind=\"text: name, attr: { " +
-"title: doc }\"></td>\r\n                                    <td data-bind=\"text: va" +
-"lue\"></td>\r\n                                </tr>\r\n                            <" +
-"/tbody>\r\n                        </table>\r\n                    </div>\r\n         " +
-"           <div class=\"row-fluid\"  data-bind=\"visible: !chosenRootObject().id, w" +
-"ith: performanceCounter\">\r\n                        ");
+"   <tr data-bind=\"attr: { title: doc }\">\r\n                                    <t" +
+"d data-bind=\"text: name\"></td>\r\n                                    <td data-bin" +
+"d=\"text: value\"></td>\r\n                                </tr>\r\n                  " +
+"          </tbody>\r\n                        </table>\r\n                    </div>" +
+"\r\n                    <div class=\"row-fluid\"  data-bind=\"visible: !chosenRootObj" +
+"ect().id, with: performanceCounter\">\r\n                        ");
 
 
 
@@ -127,8 +127,8 @@ WriteLiteral(@"
                                 </tr>
                             </thead>
                             <tbody data-bind=""foreach: rows"">
-                                <tr>
-                                    <td data-bind=""text: counterName, attr: { title: counterHelp }""></td>
+                                <tr data-bind=""attr: { title: counterHelp }"">
+                                    <td data-bind=""text: counterName""></td>
                                     <td data-bind=""text: value""></td>
                                 </tr>
                             </tbody>
