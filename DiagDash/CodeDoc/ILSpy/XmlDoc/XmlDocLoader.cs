@@ -28,7 +28,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 	/// <summary>
 	/// Helps finding and loading .xml documentation.
 	/// </summary>
-	public static class XmlDocLoader
+	internal static class XmlDocLoader
 	{
         private enum TargetRuntime
         {

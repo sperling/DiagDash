@@ -22,9 +22,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
-using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.TypeSystem.Implementation;
 
 namespace ICSharpCode.NRefactory.Documentation
 {
@@ -38,7 +35,7 @@ namespace ICSharpCode.NRefactory.Documentation
 	/// If the .xml file is changed, the index will automatically be recreated.
 	/// </remarks>
 	[Serializable]
-	public class XmlDocumentationProvider : IDocumentationProvider, IDeserializationCallback
+	internal class XmlDocumentationProvider
 	{
 		#region Cache
 		sealed class XmlDocumentationCache
@@ -305,19 +302,6 @@ namespace ICSharpCode.NRefactory.Documentation
 		}
 		#endregion
 		
-		#region GetDocumentation for entity
-		/// <inheritdoc/>
-		public DocumentationComment GetDocumentation(IEntity entity)
-		{
-			string xmlDoc = GetDocumentation(IdStringProvider.GetIdString(entity));
-			if (xmlDoc != null) {
-				return new DocumentationComment(new StringTextSource(xmlDoc), new SimpleTypeResolveContext(entity));
-			} else {
-				return null;
-			}
-		}
-		#endregion
-		
 		#region Load / Read XML
 		string LoadDocumentation(string key, int positionInFile)
 		{
@@ -340,10 +324,6 @@ namespace ICSharpCode.NRefactory.Documentation
 			}
 		}
 		#endregion
-		
-		public virtual void OnDeserialization(object sender)
-		{
-			cache = new XmlDocumentationCache();
-		}
+				
 	}
 }

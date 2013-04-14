@@ -28,7 +28,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 	/// <summary>
 	/// Renders XML documentation into a WPF <see cref="TextBlock"/>.
 	/// </summary>
-	public class XmlDocRenderer
+	internal class XmlDocRenderer
 	{
 		readonly StringBuilder ret = new StringBuilder();
 		

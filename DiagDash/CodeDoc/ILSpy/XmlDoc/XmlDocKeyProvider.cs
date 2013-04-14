@@ -28,7 +28,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 	/// <summary>
 	/// Provides XML documentation tags.
 	/// </summary>
-	public sealed class XmlDocKeyProvider
+	internal sealed class XmlDocKeyProvider
 	{
 		#region GetKey
 		public static string GetKey(MemberInfo member)
@@ -90,6 +90,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 				return;
 			}
 
+            // TODO:    is this right? for generic and stuff. 
             b.Append(type.ToString());
 
 			/*if (type.IsGenericTypeDefinition) {
@@ -137,7 +138,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 			}*/
 		}
 		
-		static int AppendTypeNameWithArguments(StringBuilder b, Type type, IList<Type> genericArguments)
+		/*static int AppendTypeNameWithArguments(StringBuilder b, Type type, IList<Type> genericArguments)
 		{
 			int outerTypeParameterCount = 0;
 			if (type.DeclaringType != null) {
@@ -161,7 +162,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 				b.Append('}');
 			}
 			return outerTypeParameterCount + localTypeParameterCount;
-		}
+		}*/
 		#endregion
 		/*
 		#region FindMemberByKey
