@@ -59,8 +59,18 @@
                         </table>
                     </div>
                     <div class="row-fluid"  data-bind="visible: !chosenRootObject().id, with: performanceCounter">
+                        <div class="span1">
+                            <label class="checkbox">
+                                <input type="checkbox" data-bind="checked: showGraph"> Show graph
+                            </label>
+                        </div>
+                        <div class="span11"></div>
+                        <div class="span4" data-bind="visible: showGraph()">
+                            test
+                        </div>
+                        <div class="span8"></div>
                         @*TODO:   overflow hidden on th table td?*@
-                        <table class="table table-bordered table-striped" style="table-layout: fixed;">
+                        <table class="table table-bordered table-striped" style="table-layout: fixed;" data-bind="visible: !showGraph()">
                             <thead>
                                 <tr>
                                     <th style="width: 50%;">Name</th>
@@ -91,6 +101,7 @@
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/toastr.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.SignalrUrl(includeHubs: true)"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.flot.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/app/index.min.js")"></script>
 
         <script type="text/javascript">

@@ -114,12 +114,19 @@ WriteLiteral("\" width=\"16\" height=\"16\" style=\"visibility: hidden;\" />\r\n
 "d=\"text: value\"></td>\r\n                                </tr>\r\n                  " +
 "          </tbody>\r\n                        </table>\r\n                    </div>" +
 "\r\n                    <div class=\"row-fluid\"  data-bind=\"visible: !chosenRootObj" +
-"ect().id, with: performanceCounter\">\r\n                        ");
+"ect().id, with: performanceCounter\">\r\n                        <div class=\"span1\"" +
+">\r\n                            <label class=\"checkbox\">\r\n                       " +
+"         <input type=\"checkbox\" data-bind=\"checked: showGraph\"> Show graph\r\n    " +
+"                        </label>\r\n                        </div>\r\n              " +
+"          <div class=\"span11\"></div>\r\n                        <div class=\"span4\"" +
+" data-bind=\"visible: showGraph()\">\r\n                            test\r\n          " +
+"              </div>\r\n                        <div class=\"span8\"></div>\r\n       " +
+"                 ");
 
 
 
 WriteLiteral(@"
-                        <table class=""table table-bordered table-striped"" style=""table-layout: fixed;"">
+                        <table class=""table table-bordered table-striped"" style=""table-layout: fixed;"" data-bind=""visible: !showGraph()"">
                             <thead>
                                 <tr>
                                     <th style=""width: 50%;"">Name</th>
@@ -147,7 +154,7 @@ WriteLiteral("\r\n                <a class=\"footer-nav\" href=\"");
 
 
             
-            #line 84 "..\..\Index.cshtml"
+            #line 94 "..\..\Index.cshtml"
                                        Write(DiagDashSettings.RootUrl);
 
             
@@ -158,7 +165,7 @@ WriteLiteral("\">Reload</a>|<a class=\"footer-nav\" href=\"/\">Leave!</a>\r\n   
 
 
             
-            #line 87 "..\..\Index.cshtml"
+            #line 97 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/jquery-1.9.1.min.js"));
 
             
@@ -168,7 +175,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 88 "..\..\Index.cshtml"
+            #line 98 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/bootstrap.min.js"));
 
             
@@ -178,7 +185,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 89 "..\..\Index.cshtml"
+            #line 99 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/knockout-2.2.1.min.js"));
 
             
@@ -188,7 +195,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 90 "..\..\Index.cshtml"
+            #line 100 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/sammy-0.7.4.min.js"));
 
             
@@ -198,7 +205,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 91 "..\..\Index.cshtml"
+            #line 101 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/toastr.min.js"));
 
             
@@ -208,7 +215,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 92 "..\..\Index.cshtml"
+            #line 102 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js"));
 
             
@@ -218,7 +225,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 93 "..\..\Index.cshtml"
+            #line 103 "..\..\Index.cshtml"
                                        Write(ResourceHelper.SignalrUrl(includeHubs: true));
 
             
@@ -228,7 +235,17 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
 
             
-            #line 94 "..\..\Index.cshtml"
+            #line 104 "..\..\Index.cshtml"
+                                       Write(ResourceHelper.Url("Scripts/jquery.flot.min.js"));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
+
+
+            
+            #line 105 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/app/index.min.js"));
 
             
@@ -240,7 +257,7 @@ WriteLiteral("\"></script>\r\n\r\n        <script type=\"text/javascript\">\r\n 
 
 
             
-            #line 99 "..\..\Index.cshtml"
+            #line 110 "..\..\Index.cshtml"
                                   Write(String.Join(", ", RootObjectUtils.RootObjectIds.Select(x => String.Format("'{0}'", x))));
 
             
@@ -250,7 +267,7 @@ WriteLiteral("], \'");
 
 
             
-            #line 99 "..\..\Index.cshtml"
+            #line 110 "..\..\Index.cshtml"
                                                                                                                               Write(DiagDashSettings.RootUrl);
 
             

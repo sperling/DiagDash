@@ -28,6 +28,7 @@
         var self = this;
         self.rows = ko.observableArray();
         self.hashToRowIndex = {};
+        self.showGraph = ko.observable(false);
     }
 
     function RootObjectRowViewModel(name, doc, value) {
@@ -78,6 +79,9 @@
             var navigationViewModel = new NavigationViewModel(rootObjectIds);
 
             ko.applyBindings(navigationViewModel);
+
+            // TODO:    should be set from local storage.
+            // navigationViewModel.performanceCounter.showGraph(false);
 
             // client-side routes    
             var sammyApp = Sammy(function () {

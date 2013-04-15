@@ -154,6 +154,9 @@
       <DependentUpon>index.js</DependentUpon>
     </None>
     <None Include="Scripts\jquery-1.9.1.min.map" />
+    <None Include="Scripts\jquery.flot.min.js.map">
+      <DependentUpon>jquery.flot.js</DependentUpon>
+    </None>
     <None Include="Scripts\knockout-2.2.1.min.js.map">
       <DependentUpon>knockout-2.2.1.js</DependentUpon>
     </None>
@@ -220,6 +223,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.txt" />
+    <EmbeddedResource Include="Scripts\jquery.flot.min.js">
+      <DependentUpon>jquery.flot.js</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Scripts\jquery.flot.js" />
     <EmbeddedResource Include="Scripts\app\index.min.js">
       <DependentUpon>index.js</DependentUpon>
     </EmbeddedResource>
