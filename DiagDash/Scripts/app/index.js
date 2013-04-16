@@ -138,15 +138,58 @@
             var diagDashHub = $.connection.diagDashHub;
             var hubInitDone = false;
 
+            var graphData = [], graphMaxPoints = 10, graphMaxX = graphMaxPoints - 1;
+            var graph = $.plot('#perf-counter-placeholder', [], {
+                series: {
+                    shadowSize: 0 // Drawing is faster without shadows
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100
+                },
+                xaxis: {
+                    show: false
+                }
+            });
             diagDashHub.client.updatePerformanceCounters = function (counterSnapShots) {
                 if (!hubInitDone) {
                     return;
                 }
 
-                for (var i = 0; i < counterSnapShots.length; i++) {
-                    navigationViewModel.performanceCounter.rows()[navigationViewModel.performanceCounter.hashToRowIndex[counterSnapShots[i].Hash]].value(counterSnapShots[i].Value);
+                var newGraphPoints = [],
+                    i, j,
+                    row;
+
+                for (i = 0; i < counterSnapShots.length; i++) {
+                    var rowIndex = navigationViewModel.performanceCounter.hashToRowIndex[counterSnapShots[i].Hash];
+                    var snapShotValue = counterSnapShots[i].Value;
+                    
+                    navigationViewModel.performanceCounter.rows()[rowIndex].value(snapShotValue);
+                    // add new points at max x.
+                    newGraphPoints[rowIndex] = [graphMaxX, snapShotValue];
                 }
 
+                // remove oldest if we have more then max points now.
+                if (graphData.length > 10) {
+                    graphData = graphData.slice(1);
+                }
+                // move old points -1 in x-axis.
+                for (i = 0; i < graphData.length; i++) {
+                    row = graphData[i];
+
+                    for (j = 0; j < row.length; j++) {
+                        row[j][0] -= 1;
+                    }
+                }
+                // append new points last.
+                graphData.push(newGraphPoints);
+
+                // redraw if graph is visible.
+                if (navigationViewModel.performanceCounter.showGraph()) {
+                    graph.setData(graphData);
+                    // Since the axes don't change, we don't need to call graph.setupGrid()
+                    graph.draw();
+                }
             };
 
             $.connection.hub.start().fail(function () {
