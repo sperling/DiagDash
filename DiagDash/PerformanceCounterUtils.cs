@@ -41,6 +41,19 @@ namespace DiagDash
             return String.Format("{0}{1}{2}", counter.CategoryName, counter.CounterName, counter.InstanceName).GetHashCode();
         }
 
+        private static float NormalizeValue(this float value, PerformanceCounterType counterType)
+        {
+            // TODO:    figure out all scaling here. should be 0-100 range.
+            switch (counterType)
+            {
+                case PerformanceCounterType.ElapsedTime:
+                    value *= 0.00001f;
+                    break;
+            }
+
+            return value;
+        }
+
         private static bool TryAddCounter(string categoryName, string counterName, string instanceName)
         {
             try
@@ -64,7 +77,7 @@ namespace DiagDash
             // take snapshot of current counters. another client may be updating it.
             var allCounters = _perfomanceCounters.ToDictionary(x => x.Key, x => x.Value);
             // default counters should never be removed. so this is safe.
-            return _defaultPerformanceCounters.Select(x => new { hash = x, counter = allCounters[x] }).Select(x => new PerfCounter() { CategoryName = x.counter.CategoryName, CounterHelp = x.counter.CounterHelp, CounterName = x.counter.CounterName, CounterType = x.counter.CounterType, InstanceName = x.counter.InstanceName, Hash = x.hash }).ToArray();
+            return _defaultPerformanceCounters.Select(x => new { hash = x, counter = allCounters[x] }).Select(x => new PerfCounter() { CategoryName = x.counter.CategoryName, CounterHelp = x.counter.CounterHelp, CounterName = x.counter.CounterName, CounterType = x.counter.CounterType.ToString(), InstanceName = x.counter.InstanceName, Hash = x.hash }).ToArray();
         }
 
         public static void RemoveCountersForClient(string clientId)
@@ -86,7 +99,18 @@ namespace DiagDash
                 return;
             }
              
-            var counterData = _perfomanceCounters.ToArray().ToDictionary(x => x.Key, x => new PerfCounterSnapShot { Sample = x.Value.NextSample(), Value = x.Value.NextValue() });
+            // TODO:    this may throw.
+            //          check where ok to continue with next counter or stop reading anymore.
+            var counterData = _perfomanceCounters.ToArray().ToDictionary(x => x.Key, x => new PerfCounterSnapShot 
+            { 
+                Sample = x.Value.NextSample(),
+                Value = x.Value.NextValue(),
+                CounterType = x.Value.CounterType
+            });
+            foreach (var i in counterData.Values)
+            {
+                i.NormalizedValue = i.Value.NormalizeValue(i.CounterType);
+            }
 
             var context = GlobalHost.ConnectionManager.GetHubContext<DiagDashHub>();
             foreach (var clientPerformanceCounters in _clientPerformanceCounters.ToArray())
@@ -99,7 +123,7 @@ namespace DiagDash
 
                     if (counterData.TryGetValue(counterHash, out snapshot))
                     {
-                        performanceCountersForClientToSend.Add(new CounterSnapShot() { Value = snapshot.Value, Hash = counterHash });
+                        performanceCountersForClientToSend.Add(new CounterSnapShot() { Value = snapshot.Value, NormalizedValue = snapshot.NormalizedValue, Hash = counterHash });
                     }
                 }
 
@@ -115,6 +139,8 @@ namespace DiagDash
         {
             public CounterSample Sample { get; set; }
             public float Value { get; set; }
+            public float NormalizedValue { get; set; }
+            public  PerformanceCounterType CounterType { get; set; }
         }
     }
 }

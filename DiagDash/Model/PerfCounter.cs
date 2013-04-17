@@ -11,7 +11,7 @@ namespace DiagDash.Model
         public string CategoryName { get; set; }
         public string CounterHelp { get; set; }
         public string CounterName { get; set; }
-        public PerformanceCounterType CounterType { get; set; }
+        public string CounterType { get; set; }
         public string InstanceName { get; set; }
 
         public int Hash { get; set; }

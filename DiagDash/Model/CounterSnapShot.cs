@@ -12,6 +12,11 @@ namespace DiagDash.Model
         /// </summary>
         public float Value { get; set; }
 
+        /// <summary>
+        /// Calculated value in 0-100 range.
+        /// </summary>
+        public float NormalizedValue { get; set; }
+
         public int Hash { get; set; }
     }
 }

@@ -55,8 +55,14 @@ namespace DiagDash
             return assembly.GetManifestResourceStream(resourcePath);
         }
 
-        public static IHtmlString Url(string url)
+        public static IHtmlString Url(string url, bool dontMinWhenDebug = false)
         {
+#if DEBUG
+            if (dontMinWhenDebug)
+            {
+                return new HtmlString(String.Format("{0}/{1}", DiagDashSettings.RootUrl, url.Replace(".min.js", ".js").Replace(".", "_")));
+            }
+#endif
             return new HtmlString(String.Format("{0}/{1}", DiagDashSettings.RootUrl, url.Replace(".", "_")));
         }
 

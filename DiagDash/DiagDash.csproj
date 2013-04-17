@@ -230,7 +230,7 @@
     <EmbeddedResource Include="Scripts\app\index.min.js">
       <DependentUpon>index.js</DependentUpon>
     </EmbeddedResource>
-    <None Include="Scripts\app\index.js" />
+    <EmbeddedResource Include="Scripts\app\index.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="pack\lib\net40\" />

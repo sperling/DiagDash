@@ -28,7 +28,14 @@
         var self = this;
         self.rows = ko.observableArray();
         self.hashToRowIndex = {};
+        self.resizeGraph = true;
         self.showGraph = ko.observable(false);
+        self.showGraph.subscribe(function (newValue) {
+            if (newValue) {
+                self.resizeGraph = true;
+            }
+        });
+        
     }
 
     function RootObjectRowViewModel(name, doc, value) {
@@ -137,10 +144,12 @@
 
             var diagDashHub = $.connection.diagDashHub;
             var hubInitDone = false;
-
             var graphData = [], graphMaxPoints = 10, graphMaxX = graphMaxPoints - 1;
             var graph = $.plot('#perf-counter-placeholder', [], {
                 series: {
+                    lines: { show: true },
+                    points: { show: false },
+                    bars: { show: false },
                     shadowSize: 0 // Drawing is faster without shadows
                 },
                 yaxis: {
@@ -148,14 +157,17 @@
                     max: 100
                 },
                 xaxis: {
-                    show: false
+                    min: 0,
+                    max: 10,
+                    show: true
                 }
             });
+
             diagDashHub.client.updatePerformanceCounters = function (counterSnapShots) {
                 if (!hubInitDone) {
                     return;
                 }
-
+                
                 var newGraphPoints = [],
                     i, j,
                     row;
@@ -163,31 +175,36 @@
                 for (i = 0; i < counterSnapShots.length; i++) {
                     var rowIndex = navigationViewModel.performanceCounter.hashToRowIndex[counterSnapShots[i].Hash];
                     var snapShotValue = counterSnapShots[i].Value;
-                    
+                    var snapShotNormalizedValue = counterSnapShots[i].NormalizedValue;
+
                     navigationViewModel.performanceCounter.rows()[rowIndex].value(snapShotValue);
                     // add new points at max x.
-                    newGraphPoints[rowIndex] = [graphMaxX, snapShotValue];
+                    newGraphPoints[rowIndex] = [graphMaxX, snapShotNormalizedValue];
                 }
 
                 // remove oldest if we have more then max points now.
-                if (graphData.length > 10) {
+                if (graphData.length === 10) {
                     graphData = graphData.slice(1);
                 }
                 // move old points -1 in x-axis.
                 for (i = 0; i < graphData.length; i++) {
-                    row = graphData[i];
+                    row = graphData[i].data;
 
                     for (j = 0; j < row.length; j++) {
                         row[j][0] -= 1;
                     }
                 }
                 // append new points last.
-                graphData.push(newGraphPoints);
-
+                graphData.push({ data: newGraphPoints });
+                
                 // redraw if graph is visible.
                 if (navigationViewModel.performanceCounter.showGraph()) {
                     graph.setData(graphData);
-                    // Since the axes don't change, we don't need to call graph.setupGrid()
+                    if (navigationViewModel.performanceCounter.resizeGraph) {
+                        graph.resize();
+                        graph.setupGrid();
+                        navigationViewModel.performanceCounter.resizeGraph = false;
+                    }
                     graph.draw();
                 }
             };

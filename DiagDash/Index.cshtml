@@ -10,6 +10,29 @@
         <link href="@ResourceHelper.Url("Content/bootstrap.min.css")" rel="stylesheet" media="screen" />
         <link href="@ResourceHelper.Url("Content/bootstrap-responsive.min.css")" rel="stylesheet" media="screen" />
         <link href="@ResourceHelper.Url("Content/toastr.min.css")" rel="stylesheet" media="screen" />
+        <style type="text/css">
+            #perf-counter-container
+            {
+                background: linear-gradient(#F6F6F6 0px, #FFFFFF 50px) repeat scroll 0 0 transparent;
+                border: 1px solid #DDDDDD;
+                -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+                height: 450px;
+                margin: 15px auto 30px;
+                padding: 20px 15px 15px;
+                width: 850px;
+                vertical-align: top;
+            }
+            #perf-counter-placeholder
+            {
+                font-size: 14px;
+                height: 450px;
+                line-height: 1.2em;
+                width: 850px;
+                margin: 0;
+                vertical-align: top;
+            }
+        </style>
     </head>
     <body style="padding-top: 60px; padding-bottom: 40px;">
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -65,12 +88,11 @@
                             </label>
                         </div>
                         <div class="span11"></div>
-                        <div class="span4" data-bind="visible: showGraph()">
-                            <div id="perf-counter-placeholder" style="height: 150px; width: 300px;">
+                        <div id="perf-counter-container" data-bind="visible: showGraph()">
+                            <div id="perf-counter-placeholder" style="padding: 0px; position: relative;">
 
                             </div>
                         </div>
-                        <div class="span8"></div>
                         @*TODO:   overflow hidden on th table td?*@
                         <table class="table table-bordered table-striped" style="table-layout: fixed;" data-bind="visible: !showGraph()">
                             <thead>
@@ -104,7 +126,7 @@
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.SignalrUrl(includeHubs: true)"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.flot.min.js")"></script>
-        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/app/index.min.js")"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/app/index.min.js", dontMinWhenDebug: true)"></script>
 
         <script type="text/javascript">
             $(function () {
