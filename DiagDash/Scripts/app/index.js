@@ -144,7 +144,10 @@
 
             var diagDashHub = $.connection.diagDashHub;
             var hubInitDone = false;
-            var graphData = [], graphDataSets = [], graphMaxPoints = 10, graphMaxX = graphMaxPoints - 1;
+            var graphData = [],                     // holds graphMaxPoints of [x, y] for each performance counter.
+                graphDataSets = [],                 // holds a set(label, color, data) for each peformance counter.
+                graphMaxPoints = 10,
+                graphMaxX = graphMaxPoints - 1;
             var graph = $.plot('#perf-counter-placeholder', graphDataSets, {
                 series: {
                     shadowSize: 0 // Drawing is faster without shadows
