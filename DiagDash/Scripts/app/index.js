@@ -144,12 +144,9 @@
 
             var diagDashHub = $.connection.diagDashHub;
             var hubInitDone = false;
-            var graphData = [], graphMaxPoints = 10, graphMaxX = graphMaxPoints - 1;
-            var graph = $.plot('#perf-counter-placeholder', [], {
+            var graphData = [], graphDataSets = [], graphMaxPoints = 10, graphMaxX = graphMaxPoints - 1;
+            var graph = $.plot('#perf-counter-placeholder', graphDataSets, {
                 series: {
-                    lines: { show: true },
-                    points: { show: false },
-                    bars: { show: false },
                     shadowSize: 0 // Drawing is faster without shadows
                 },
                 yaxis: {
@@ -158,8 +155,7 @@
                 },
                 xaxis: {
                     min: 0,
-                    max: 10,
-                    show: true
+                    show: false
                 }
             });
 
@@ -183,23 +179,31 @@
                 }
 
                 // remove oldest if we have more then max points now.
-                if (graphData.length === 10) {
+                if (graphData.length === graphMaxPoints) {
                     graphData = graphData.slice(1);
                 }
                 // move old points -1 in x-axis.
                 for (i = 0; i < graphData.length; i++) {
-                    row = graphData[i].data;
+                    row = graphData[i];
 
                     for (j = 0; j < row.length; j++) {
                         row[j][0] -= 1;
                     }
                 }
                 // append new points last.
-                graphData.push({ data: newGraphPoints });
+                graphData.push(newGraphPoints);
                 
                 // redraw if graph is visible.
                 if (navigationViewModel.performanceCounter.showGraph()) {
-                    graph.setData(graphData);
+                    // dump over data.
+                    for (i = 0; i < graphDataSets.length; i++) {
+                        graphDataSets[i].data = [];
+                        for (j = 0; j < graphData.length; j++) {
+                            graphDataSets[i].data.push(graphData[j][i]);
+                        }
+                    }
+
+                    graph.setData(graphDataSets);
                     if (navigationViewModel.performanceCounter.resizeGraph) {
                         graph.resize();
                         graph.setupGrid();
@@ -226,6 +230,7 @@
                                                               perfCounters[i].InstanceName,
                                                               perfCounters[i].Hash));
                         navigationViewModel.performanceCounter.hashToRowIndex[perfCounters[i].Hash] = i;
+                        graphDataSets.push({ label: perfCounters[i].CounterName, color: i, data: [] })
                     }
 
                     hubInitDone = true;
