@@ -88,13 +88,13 @@
                             </label>
                         </div>
                         <div class="span11"></div>
-                        <div id="perf-counter-container" data-bind="visible: showGraph()">
+                        <div id="perf-counter-container" data-bind="visible: showGraph()" style="display: none;">
                             <div id="perf-counter-placeholder" style="padding: 0px; position: relative;">
 
                             </div>
                         </div>
                         @*TODO:   overflow hidden on th table td?*@
-                        <table class="table table-bordered table-striped" style="table-layout: fixed;" data-bind="visible: !showGraph()">
+                        <table class="table table-bordered table-striped" style="table-layout: fixed; display: none;" data-bind="visible: !showGraph()">
                             <thead>
                                 <tr>
                                     <th style="width: 50%;">Name</th>
@@ -118,14 +118,15 @@
                 <a class="footer-nav" href="@DiagDashSettings.RootUrl">Reload</a>|<a class="footer-nav" href="/">Leave!</a>
             </footer>
         </div>
-        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery-1.9.1.min.js")"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery-1.9.1.min.js", dontMinWhenDebug: true)"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/bootstrap.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/knockout-2.2.1.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/sammy-0.7.4.min.js")"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/toastr.min.js")"></script>
-        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js")"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js", dontMinWhenDebug: true)"></script>
         <script type="text/javascript" src="@ResourceHelper.SignalrUrl(includeHubs: true)"></script>
-        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.flot.min.js")"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.flot.min.js", dontMinWhenDebug: true)"></script>
+        <script type="text/javascript" src="@ResourceHelper.Url("Scripts/jquery.flot.time.min.js", dontMinWhenDebug: true)"></script>
         <script type="text/javascript" src="@ResourceHelper.Url("Scripts/app/index.min.js", dontMinWhenDebug: true)"></script>
 
         <script type="text/javascript">

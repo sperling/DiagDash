@@ -95,6 +95,7 @@
                 this.get('#', function () {
                     // TODO:    start sending perf counters.
                     navigationViewModel.chosenRootObject(navigationViewModel.rootObjects[0]);
+                    navigationViewModel.performanceCounter.resizeGraph = true;
                 });
 
                 this.get('#:rootObjectId', function () {
@@ -105,6 +106,7 @@
                         // only make request when correct root id. so #FooBar will never trigger.
                         if (rootObject.id == rootObjectId) {
                             navigationViewModel.chosenRootObject(rootObject);
+                            navigationViewModel.performanceCounter.resizeGraph = true;
 
                             if (!rootObject.rows().length) {
                                 ajaxRequest("loadRootObject", { id: rootObjectId }, function (data) {
@@ -147,7 +149,7 @@
             var graphData = [],                     // holds graphMaxPoints of [x, y] for each performance counter.
                 graphDataSets = [],                 // holds a set(label, color, data) for each peformance counter.
                 graphMaxPoints = 10,
-                graphMaxX = graphMaxPoints - 1;
+                snapshotMilliseconds;
             var graph = $.plot('#perf-counter-placeholder', graphDataSets, {
                 series: {
                     shadowSize: 0 // Drawing is faster without shadows
@@ -157,19 +159,22 @@
                     max: 100
                 },
                 xaxis: {
-                    min: 0,
-                    show: false
+                    mode: 'time'
+                },
+                legend: {
+                    backgroundColor: '000000'
                 }
             });
-
-            diagDashHub.client.updatePerformanceCounters = function (counterSnapShots) {
+            
+            diagDashHub.client.updatePerformanceCounters = function (timestamp, counterSnapShots) {
                 if (!hubInitDone) {
                     return;
                 }
                 
                 var newGraphPoints = [],
                     i, j,
-                    row;
+                    row,
+                    utcToLocalTimeDifference = new Date().getTimezoneOffset() * 60 * 1000;      // getTimezoneOffset is in minutes.
 
                 for (i = 0; i < counterSnapShots.length; i++) {
                     var rowIndex = navigationViewModel.performanceCounter.hashToRowIndex[counterSnapShots[i].Hash];
@@ -177,30 +182,30 @@
                     var snapShotNormalizedValue = counterSnapShots[i].NormalizedValue;
 
                     navigationViewModel.performanceCounter.rows()[rowIndex].value(snapShotValue);
-                    // add new points at max x.
-                    newGraphPoints[rowIndex] = [graphMaxX, snapShotNormalizedValue];
+                    // add new points.
+                    // timestamp is in UTC milliseconds.
+                    newGraphPoints[rowIndex] = [timestamp - utcToLocalTimeDifference, snapShotNormalizedValue];
                 }
 
                 // remove oldest if we have more then max points now.
                 if (graphData.length === graphMaxPoints) {
                     graphData = graphData.slice(1);
                 }
-                // move old points -1 in x-axis.
-                for (i = 0; i < graphData.length; i++) {
-                    row = graphData[i];
-
-                    for (j = 0; j < row.length; j++) {
-                        row[j][0] -= 1;
-                    }
-                }
                 // append new points last.
                 graphData.push(newGraphPoints);
                 
                 // redraw if graph is visible.
-                if (navigationViewModel.performanceCounter.showGraph()) {
+                if (navigationViewModel.performanceCounter.showGraph() && !navigationViewModel.chosenRootObject().id) {
                     // dump over data.
                     for (i = 0; i < graphDataSets.length; i++) {
                         graphDataSets[i].data = [];
+                        if (graphData.length < graphMaxPoints) {
+                            // if we have less then max points, fill up with dummy data.
+                            // so x-axis will be correct.
+                            for (j = 0; j < graphMaxPoints - graphData.length; j++) {
+                                graphDataSets[i].data.push([(timestamp - utcToLocalTimeDifference) - ((graphMaxPoints - j) * snapshotMilliseconds), 0]);
+                            }
+                        }
                         for (j = 0; j < graphData.length; j++) {
                             graphDataSets[i].data.push(graphData[j][i]);
                         }
@@ -208,10 +213,27 @@
 
                     graph.setData(graphDataSets);
                     if (navigationViewModel.performanceCounter.resizeGraph) {
+                        graph = $.plot('#perf-counter-placeholder', graphDataSets, {
+                            series: {
+                                shadowSize: 0 // Drawing is faster without shadows
+                            },
+                            yaxis: {
+                                min: 0,
+                                max: 100
+                            },
+                            xaxis: {
+                                mode: 'time'
+                            },
+                            legend: {
+                                backgroundColor: '000000'
+                            }
+                        });
                         graph.resize();
-                        graph.setupGrid();
                         navigationViewModel.performanceCounter.resizeGraph = false;
                     }
+                    
+                    // need to setupGrid() for redrawing of x-axis.
+                    graph.setupGrid();
                     graph.draw();
                 }
             };
@@ -219,23 +241,23 @@
             $.connection.hub.start().fail(function () {
                 toastr.error("Faild to start the hub", "Signalr error");
             }).done(function () {
-                diagDashHub.server.getPerformanceCounters([]).done(function (perfCounters) {
-                    if (!perfCounters || !perfCounters.length) {
+                diagDashHub.server.getPerformanceCounters([]).done(function (data) {
+                    if (!data || !data.perfCounters || !data.perfCounters.length) {
                         return;
                     }
 
-                    for (var i = 0; i < perfCounters.length; i++) {
+                    for (var i = 0; i < data.perfCounters.length; i++) {
                         navigationViewModel.performanceCounter.rows.push(
-                            new PeformanceCounterRowViewModel(perfCounters[i].CategoryName,
-                                                              perfCounters[i].CounterHelp,
-                                                              perfCounters[i].CounterName,
-                                                              perfCounters[i].CounterType,
-                                                              perfCounters[i].InstanceName,
-                                                              perfCounters[i].Hash));
-                        navigationViewModel.performanceCounter.hashToRowIndex[perfCounters[i].Hash] = i;
-                        graphDataSets.push({ label: perfCounters[i].CounterName, color: i, data: [] })
+                            new PeformanceCounterRowViewModel(data.perfCounters[i].CategoryName,
+                                                              data.perfCounters[i].CounterHelp,
+                                                              data.perfCounters[i].CounterName,
+                                                              data.perfCounters[i].CounterType,
+                                                              data.perfCounters[i].InstanceName,
+                                                              data.perfCounters[i].Hash));
+                        navigationViewModel.performanceCounter.hashToRowIndex[data.perfCounters[i].Hash] = i;
+                        graphDataSets.push({ label: data.perfCounters[i].CounterName, color: i, data: [] })
                     }
-
+                    snapshotMilliseconds = data.snapshotMilliseconds;
                     hubInitDone = true;
                 }); 
             });

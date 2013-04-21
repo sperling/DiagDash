@@ -142,15 +142,15 @@ WriteLiteral("\" width=\"16\" height=\"16\" style=\"visibility: hidden;\" />\r\n
 "         <input type=\"checkbox\" data-bind=\"checked: showGraph\"> Show graph\r\n    " +
 "                        </label>\r\n                        </div>\r\n              " +
 "          <div class=\"span11\"></div>\r\n                        <div id=\"perf-coun" +
-"ter-container\" data-bind=\"visible: showGraph()\">\r\n                            <d" +
-"iv id=\"perf-counter-placeholder\" style=\"padding: 0px; position: relative;\">\r\n\r\n " +
-"                           </div>\r\n                        </div>\r\n             " +
-"           ");
+"ter-container\" data-bind=\"visible: showGraph()\" style=\"display: none;\">\r\n       " +
+"                     <div id=\"perf-counter-placeholder\" style=\"padding: 0px; pos" +
+"ition: relative;\">\r\n\r\n                            </div>\r\n                      " +
+"  </div>\r\n                        ");
 
 
 
 WriteLiteral(@"
-                        <table class=""table table-bordered table-striped"" style=""table-layout: fixed;"" data-bind=""visible: !showGraph()"">
+                        <table class=""table table-bordered table-striped"" style=""table-layout: fixed; display: none;"" data-bind=""visible: !showGraph()"">
                             <thead>
                                 <tr>
                                     <th style=""width: 50%;"">Name</th>
@@ -190,7 +190,7 @@ WriteLiteral("\">Reload</a>|<a class=\"footer-nav\" href=\"/\">Leave!</a>\r\n   
 
             
             #line 121 "..\..\Index.cshtml"
-                                       Write(ResourceHelper.Url("Scripts/jquery-1.9.1.min.js"));
+                                       Write(ResourceHelper.Url("Scripts/jquery-1.9.1.min.js", dontMinWhenDebug: true));
 
             
             #line default
@@ -240,7 +240,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
             
             #line 126 "..\..\Index.cshtml"
-                                       Write(ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js"));
+                                       Write(ResourceHelper.Url("Scripts/jquery.signalR-1.0.1.min.js", dontMinWhenDebug: true));
 
             
             #line default
@@ -260,7 +260,7 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
             
             #line 128 "..\..\Index.cshtml"
-                                       Write(ResourceHelper.Url("Scripts/jquery.flot.min.js"));
+                                       Write(ResourceHelper.Url("Scripts/jquery.flot.min.js", dontMinWhenDebug: true));
 
             
             #line default
@@ -270,6 +270,16 @@ WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
 
             
             #line 129 "..\..\Index.cshtml"
+                                       Write(ResourceHelper.Url("Scripts/jquery.flot.time.min.js", dontMinWhenDebug: true));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\"></script>\r\n        <script type=\"text/javascript\" src=\"");
+
+
+            
+            #line 130 "..\..\Index.cshtml"
                                        Write(ResourceHelper.Url("Scripts/app/index.min.js", dontMinWhenDebug: true));
 
             
@@ -281,7 +291,7 @@ WriteLiteral("\"></script>\r\n\r\n        <script type=\"text/javascript\">\r\n 
 
 
             
-            #line 134 "..\..\Index.cshtml"
+            #line 135 "..\..\Index.cshtml"
                                   Write(String.Join(", ", RootObjectUtils.RootObjectIds.Select(x => String.Format("'{0}'", x))));
 
             
@@ -291,7 +301,7 @@ WriteLiteral("], \'");
 
 
             
-            #line 134 "..\..\Index.cshtml"
+            #line 135 "..\..\Index.cshtml"
                                                                                                                               Write(DiagDashSettings.RootUrl);
 
             

@@ -99,6 +99,7 @@ namespace DiagDash
 
         private void SetCache(HttpContext context)
         {
+#if !DEBUG
             HttpCachePolicy cache = context.Response.Cache;
             cache.SetCacheability(HttpCacheability.Public);
             cache.SetOmitVaryStar(true);
@@ -106,6 +107,7 @@ namespace DiagDash
             cache.SetValidUntilExpires(true);
             cache.SetLastModified(DateTime.Now);
             cache.VaryByHeaders["User-Agent"] = true;
+#endif
         }
     }
 }

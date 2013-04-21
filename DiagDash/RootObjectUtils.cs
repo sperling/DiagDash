@@ -16,7 +16,7 @@ namespace DiagDash
     internal static class RootObjectUtils
     {
         // OBS!!!   also the order in UI menu.
-        public static readonly string[] RootObjectIds = new[] { "HttpRuntime", "HttpContext", "Enviroment", "BuildManager", "Routes", "HostingEnviroment" };
+        public static readonly string[] RootObjectIds = new[] { "HttpRuntime", "HttpContext", "HostingEnviroment", "BuildManager", "Routes", "Enviroment" };
 
         private static readonly Dictionary<string, List<Expression<Func<HttpContext, object>>>> _rootObjectExpressions = new Dictionary<string, List<Expression<Func<HttpContext, object>>>>();
         private static readonly List<Expression<Func<HttpContext, object>>> _httpRuntimeExpressions = new List<Expression<Func<HttpContext, object>>>()
@@ -95,6 +95,10 @@ namespace DiagDash
         {
             _ => HostingEnvironment.InClientBuildManager,
             _ => HostingEnvironment.InitializationException,
+#if FRAMEWORK_45
+            // in 4.5
+            _ => HostingEnvironment.IsDevelopmentEnvironment,
+#endif
             _ => HostingEnvironment.IsHosted,
             _ => HostingEnvironment.MaxConcurrentRequestsPerCPU,
             _ => HostingEnvironment.MaxConcurrentThreadsPerCPU,

@@ -19,6 +19,9 @@ namespace DiagDash
         private static ConcurrentDictionary<int, PerformanceCounter> _perfomanceCounters = new ConcurrentDictionary<int, PerformanceCounter>();
         private static List<int> _defaultPerformanceCounters = null;
 
+        // TODO:    from settings.
+        public const int SNAPSHOT_MILLISECONDS = 2000;
+
         public static void Init()
         {
             // TODO:    lazy load this on first client connects.
@@ -27,8 +30,7 @@ namespace DiagDash
 
             _defaultPerformanceCounters = _perfomanceCounters.Keys.ToList();
 
-            // TODO:    from settings.
-            Timer = new Timer(2000);
+            Timer = new Timer(SNAPSHOT_MILLISECONDS);
             Timer.AutoReset = true;
             Timer.Elapsed += OnElapsed;
 
@@ -87,6 +89,8 @@ namespace DiagDash
             _clientPerformanceCounters.TryRemove(clientId, out dummy);
         }
 
+        private static DateTime _epoch = new DateTime(1970, 1, 1);
+
         private static void OnElapsed(object sender, ElapsedEventArgs e)
         {
             if (!DiagDashSettings.Enable || String.IsNullOrEmpty(DiagDashSettings.CookieSecret))
@@ -98,7 +102,9 @@ namespace DiagDash
             {
                 return;
             }
-             
+
+            var timestamp = (long)Math.Floor((DateTime.UtcNow - _epoch).TotalMilliseconds + 0.5);
+
             // TODO:    this may throw.
             //          check where ok to continue with next counter or stop reading anymore.
             var counterData = _perfomanceCounters.ToArray().ToDictionary(x => x.Key, x => new PerfCounterSnapShot 
@@ -130,7 +136,7 @@ namespace DiagDash
                 if (performanceCountersForClientToSend.Count > 0)
                 {
                     // TODO:    should only send value/sample here.
-                    context.Clients.Client(clientPerformanceCounters.Key).updatePerformanceCounters(performanceCountersForClientToSend);
+                    context.Clients.Client(clientPerformanceCounters.Key).updatePerformanceCounters(timestamp, performanceCountersForClientToSend);
                 }
             }
         }

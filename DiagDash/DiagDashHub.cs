@@ -11,9 +11,9 @@ namespace DiagDash
 {
     public class DiagDashHub : Hub
     {
-        public PerfCounter[] GetPerformanceCounters(PerfCounter[] existingCounters)
+        public object GetPerformanceCounters(PerfCounter[] existingCounters)
         {
-            return PerformanceCounterUtils.AddDefaultCountersForClient(Context.ConnectionId, existingCounters);
+            return new { snapshotMilliseconds = PerformanceCounterUtils.SNAPSHOT_MILLISECONDS, perfCounters = PerformanceCounterUtils.AddDefaultCountersForClient(Context.ConnectionId, existingCounters) };
         }
 
         // TODO:    add start/stop viewing api calls.

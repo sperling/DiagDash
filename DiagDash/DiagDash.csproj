@@ -157,6 +157,9 @@
     <None Include="Scripts\jquery.flot.min.js.map">
       <DependentUpon>jquery.flot.js</DependentUpon>
     </None>
+    <None Include="Scripts\jquery.flot.time.min.js.map">
+      <DependentUpon>jquery.flot.time.js</DependentUpon>
+    </None>
     <None Include="Scripts\knockout-2.2.1.min.js.map">
       <DependentUpon>knockout-2.2.1.js</DependentUpon>
     </None>
@@ -177,7 +180,7 @@
     <None Include="Scripts\bootstrap.js" />
     <EmbeddedResource Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
-    <None Include="Scripts\jquery-1.9.1.js" />
+    <EmbeddedResource Include="Scripts\jquery-1.9.1.js" />
     <EmbeddedResource Include="Scripts\jquery-1.9.1.min.js" />
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +218,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\jquery.signalR-1.0.1.js" />
+    <EmbeddedResource Include="Scripts\jquery.signalR-1.0.1.js" />
     <EmbeddedResource Include="Scripts\jquery.signalR-1.0.1.min.js" />
   </ItemGroup>
   <ItemGroup>
@@ -223,10 +226,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.txt" />
+    <EmbeddedResource Include="Scripts\jquery.flot.time.js" />
+    <EmbeddedResource Include="Scripts\jquery.flot.time.min.js">
+      <DependentUpon>jquery.flot.time.js</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Scripts\jquery.flot.min.js">
       <DependentUpon>jquery.flot.js</DependentUpon>
     </EmbeddedResource>
-    <None Include="Scripts\jquery.flot.js" />
+    <EmbeddedResource Include="Scripts\jquery.flot.js" />
     <EmbeddedResource Include="Scripts\app\index.min.js">
       <DependentUpon>index.js</DependentUpon>
     </EmbeddedResource>
