@@ -73,8 +73,7 @@ namespace ICSharpCode.ILSpy.XmlDoc
 							ret.Append(": ");
 							break;
 						case "returns":
-							ret.Append(Environment.NewLine);
-							ret.Append("Returns: ");
+                            xml.Skip();
 							break;
 						case "see":
 							ret.Append(GetCref(xml["cref"]));
